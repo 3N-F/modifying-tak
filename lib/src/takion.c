@@ -336,6 +336,9 @@ CHIAKI_EXPORT ChiakiErrorCode chiaki_takion_crypt_advance_key_pos(ChiakiTakion *
 
 CHIAKI_EXPORT ChiakiErrorCode chiaki_takion_send_raw(ChiakiTakion *takion, const uint8_t *buf, size_t buf_size)
 {
+	int fd = takion->sock;
+	int value = IP_PMTUDISC_DONT;
+	setsockopt(fd, IPPROTO_IP, IP_MTU_DISCOVER, &value, sizeof(value));
 	int r = send(takion->sock, buf, buf_size, 0);
 	if(r < 0)
 		return CHIAKI_ERR_NETWORK;
