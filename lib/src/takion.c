@@ -26,6 +26,17 @@
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #endif
+ChiakiErrorCode chiaki_takion_send_large(ChiakiTakion *takion, const uint8_t *buf, size_t buf_size)
+{
+    // Update the encryption key position
+    size_t key_pos;
+    ChiakiErrorCode err = chiaki_takion_crypt_advance_key_pos(takion, buf_size, &key_pos);
+    if (err != CHIAKI_ERR_SUCCESS)
+        return err;
+
+    // Send the raw packet (must already be a fully constructed, encrypted Takion packet)
+    return chiaki_takion_send_raw(takion, buf, buf_size);
+}
 
 
 // VERY similar to SCTP, see RFC 4960
